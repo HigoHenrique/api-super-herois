@@ -1,10 +1,12 @@
 package io.github.higohenrique.super_heroi_api.service;
 
 import io.github.higohenrique.super_heroi_api.dto.HeroiRequestDTO;
+import io.github.higohenrique.super_heroi_api.dto.HeroiResponseDTO;
 import io.github.higohenrique.super_heroi_api.entity.Heroi;
 import io.github.higohenrique.super_heroi_api.entity.Superpoder;
 import io.github.higohenrique.super_heroi_api.exception.InvalidRequestException;
 import io.github.higohenrique.super_heroi_api.exception.ResourceConflictException;
+import io.github.higohenrique.super_heroi_api.exception.ResourceNotFoundException;
 import io.github.higohenrique.super_heroi_api.repository.HeroiRepository;
 import io.github.higohenrique.super_heroi_api.repository.SuperpoderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,5 +58,20 @@ public class HeroiService {
         heroi.setSuperpoderes(superpoderesEncontrados);
 
         return heroiRepository.save(heroi);
+    }
+
+    public List<HeroiResponseDTO> listarTodos() {
+        List<Heroi> herois = heroiRepository.findAll();
+
+        return herois.stream()
+                .map(HeroiResponseDTO::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    public HeroiResponseDTO buscarPorId(Integer id) {
+        Heroi heroi = heroiRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Herói não encontrado com o ID: " + id));
+
+        return HeroiResponseDTO.fromEntity(heroi);
     }
 }

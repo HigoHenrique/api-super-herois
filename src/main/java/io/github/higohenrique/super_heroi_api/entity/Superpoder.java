@@ -17,7 +17,7 @@ public class Superpoder {
     private Integer id;
 
     @Column(name = "superpoder", length = 50, nullable = false, unique = true)
-    private String superPoder;
+    private String nome;
 
     @Column(length = 250)
     private String descricao;
