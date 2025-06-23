@@ -110,4 +110,13 @@ public class HeroiService {
 
         return HeroiResponseDTO.fromEntity(heroiAtualizado);
     }
+
+    public void deletarHeroi(Integer id) {
+
+        if (!heroiRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Não foi possível excluir. Herói não encontrado com o ID: " + id);
+        }
+
+        heroiRepository.deleteById(id);
+    }
 }

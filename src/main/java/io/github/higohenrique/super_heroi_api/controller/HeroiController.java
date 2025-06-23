@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/herois")
@@ -46,6 +47,15 @@ public class HeroiController {
     public ResponseEntity<HeroiResponseDTO> atualizarHeroi(@PathVariable Integer id, @Valid @RequestBody HeroiRequestDTO heroiRequestDTO) {
         HeroiResponseDTO heroiAtualizado = heroiService.atualizarHeroi(id, heroiRequestDTO);
         return ResponseEntity.ok(heroiAtualizado);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Map<String, String>> deletarHeroi(@PathVariable Integer id) {
+        heroiService.deletarHeroi(id);
+
+        Map<String, String> response = Map.of("message", "Herói com o ID " + id + " foi excluído com sucesso.");
+
+        return ResponseEntity.ok(response);
     }
 
 }
