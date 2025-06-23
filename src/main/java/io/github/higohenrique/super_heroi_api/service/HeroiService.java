@@ -74,4 +74,40 @@ public class HeroiService {
 
         return HeroiResponseDTO.fromEntity(heroi);
     }
+
+    public HeroiResponseDTO atualizarHeroi(Integer id, HeroiRequestDTO heroiRequestDTO) {
+
+        Heroi heroiExistente = heroiRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Herói não encontrado com o ID: " + id));
+
+        heroiRepository.findByNomeHeroi(heroiRequestDTO.getNomeHeroi())
+                .ifPresent(heroiComMesmoNome -> {
+                    if (!heroiComMesmoNome.getId().equals(id)) {
+                        throw new ResourceConflictException("O nome de herói '" + heroiRequestDTO.getNomeHeroi() +
+                                "' já está em uso por outro herói.");
+                    }
+                });
+
+        Set<Integer> superpoderesIds = heroiRequestDTO.getSuperpoderesIds();
+        Set<Superpoder> superpoderesEncontrados = new HashSet<>(superpoderRepository.findAllById(superpoderesIds));
+
+        if (superpoderesEncontrados.size() != superpoderesIds.size()) {
+            Set<Integer> idsEncontrados = superpoderesEncontrados.stream().map(Superpoder::getId).collect(Collectors.toSet());
+            List<Integer> idsInvalidos = superpoderesIds.stream()
+                    .filter(idSuperpoder -> !idsEncontrados.contains(idSuperpoder)).toList();
+
+            throw new InvalidRequestException("Os seguintes IDs de superpoderes são inválidos ou não existem: " + idsInvalidos);
+        }
+
+        heroiExistente.setNome(heroiRequestDTO.getNome());
+        heroiExistente.setNomeHeroi(heroiRequestDTO.getNomeHeroi());
+        heroiExistente.setDataNascimento(heroiRequestDTO.getDataNascimento());
+        heroiExistente.setAltura(heroiRequestDTO.getAltura());
+        heroiExistente.setPeso(heroiRequestDTO.getPeso());
+        heroiExistente.setSuperpoderes(superpoderesEncontrados);
+
+        Heroi heroiAtualizado = heroiRepository.save(heroiExistente);
+
+        return HeroiResponseDTO.fromEntity(heroiAtualizado);
+    }
 }

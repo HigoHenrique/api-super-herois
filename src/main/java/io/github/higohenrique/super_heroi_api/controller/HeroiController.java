@@ -42,4 +42,10 @@ public class HeroiController {
         return ResponseEntity.ok(heroi);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<HeroiResponseDTO> atualizarHeroi(@PathVariable Integer id, @Valid @RequestBody HeroiRequestDTO heroiRequestDTO) {
+        HeroiResponseDTO heroiAtualizado = heroiService.atualizarHeroi(id, heroiRequestDTO);
+        return ResponseEntity.ok(heroiAtualizado);
+    }
+
 }
