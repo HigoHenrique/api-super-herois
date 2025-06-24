@@ -1,6 +1,7 @@
 package io.github.higohenrique.super_heroi_api.exception;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import io.github.higohenrique.super_heroi_api.dto.ApiErrorDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
@@ -30,44 +31,32 @@ public class GlobalExceptionHandler {
 
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(ResourceConflictException.class)
-    public Map<String, String> handleResourceConflict(ResourceConflictException ex) {
-        Map<String, String> errorResponse = new HashMap<>();
-        errorResponse.put("error", ex.getMessage());
-        return errorResponse;
+    public ApiErrorDTO handleResourceConflict(ResourceConflictException ex) {
+        return new ApiErrorDTO(ex.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidRequestException.class)
-    public Map<String, String> handleInvalidRequest(InvalidRequestException ex) {
-        Map<String, String> errorResponse = new HashMap<>();
-        errorResponse.put("error", ex.getMessage());
-        return errorResponse;
+    public ApiErrorDTO handleInvalidRequest(InvalidRequestException ex) {
+        return new ApiErrorDTO(ex.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public Map<String, String> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
-        Map<String, String> response = new HashMap<>();
-        String genericMessage = "O corpo da requisição está malformado ou contém dados em formato inválido.";
+    public ApiErrorDTO handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
 
         Throwable cause = ex.getCause();
-        if (cause instanceof InvalidFormatException) {
-            InvalidFormatException ife = (InvalidFormatException) cause;
-            if (ife.getTargetType() != null && ife.getTargetType().equals(LocalDate.class)) {
-                response.put("error", "O formato da data é inválido. Por favor, utilize o formato 'dd/MM/yyyy'.");
-                return response;
-            }
-        }
+        String message = (cause instanceof InvalidFormatException &&
+                ((InvalidFormatException) cause).getTargetType().equals(LocalDate.class))
+                ? "O formato da data é inválido. Por favor, utilize o formato 'dd/MM/yyyy'."
+                : "O corpo da requisição está malformado ou contém dados em formato inválido.";
 
-        response.put("error", genericMessage);
-        return response;
+        return new ApiErrorDTO(message);
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(ResourceNotFoundException.class)
-    public Map<String, String> handleResourceNotFound(ResourceNotFoundException ex) {
-        Map<String, String> errorResponse = new HashMap<>();
-        errorResponse.put("error", ex.getMessage());
-        return errorResponse;
+    public ApiErrorDTO handleResourceNotFound(ResourceNotFoundException ex) {
+        return new ApiErrorDTO(ex.getMessage());
     }
 }

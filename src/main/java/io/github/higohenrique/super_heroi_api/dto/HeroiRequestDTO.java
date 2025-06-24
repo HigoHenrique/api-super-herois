@@ -1,6 +1,7 @@
 package io.github.higohenrique.super_heroi_api.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
@@ -19,6 +20,8 @@ public class HeroiRequestDTO {
     private String nomeHeroi;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @Schema(description = "Data de nascimento do herói no formato dd/MM/yyyy",
+            example = "09/02/1995", type = "string")
     @PastOrPresent(message = "A data de nascimento não pode ser uma data futura.")
     private LocalDate dataNascimento;
 

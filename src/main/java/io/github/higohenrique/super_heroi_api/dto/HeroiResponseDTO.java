@@ -2,6 +2,7 @@ package io.github.higohenrique.super_heroi_api.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.github.higohenrique.super_heroi_api.entity.Heroi;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -16,6 +17,8 @@ public class HeroiResponseDTO {
     private String nomeHeroi;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @Schema(description = "Data de nascimento do herói no formato dd/MM/yyyy",
+            example = "09/02/1995", type = "string")
     private LocalDate dataNascimento;
 
     private Double altura;
