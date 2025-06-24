@@ -18,6 +18,7 @@ API RESTful desenvolvida como parte de um desafio técnico. A aplicação consis
 
 - ✅ **Cadastro** de um novo super-herói (`POST /api/herois`)
 - ✅ **Listagem** de todos os super-heróis cadastrados (`GET /api/herois`)
+- ✅ **Listagem** de todos os super-poderes cadastrados (`GET /api/superpoderes`)
 - ✅ **Consulta** de um super-herói por ID (`GET /api/herois/{id}`)
 - ✅ **Atualização** de informações de um super-herói por ID (`PUT /api/herois/{id}`)
 - ✅ **Exclusão** de um super-herói por ID (`DELETE /api/herois/{id}`)
